@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tapasvi Vision Library by Ankush - Admission & Online Payment</title>
+    <style>
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background-color: #f4f6f9; color: #333; }
+        .header-bar { background: linear-gradient(90deg, #ff0000, #b30000); text-align: center; padding: 20px 0; font-size: 24px; font-weight: bold; color: white; box-shadow: 0px 4px 15px rgba(0,0,0,0.2); }
+        .sub-header { text-align: center; font-size: 16px; color: #ddd; margin-top: 5px; font-weight: normal; }
+        .container { max-width: 600px; margin: 30px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative; min-height: 400px; }
+        #locker-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; text-align: center; padding: 20px; border-radius: 12px; box-sizing: border-box; }
+        .lock-box { background: #fdfdfd; padding: 30px; border-radius: 15px; border: 1px solid #e0e0e0; box-shadow: 0px 10px 30px rgba(0,0,0,0.05); }
+        .lock-icon { font-size: 60px; margin-bottom: 15px; }
+        h2 { margin: 0 0 10px 0; color: #111; }
+        p.lock-text { color: #666; font-size: 15px; margin-bottom: 25px; line-height: 1.6; }
+        .highlight { color: #d32f2f; font-weight: bold; font-size: 17px; background: #ffebee; padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 5px; }
+        .search-btn { background-color: #ff0000; color: white; border: none; padding: 15px 35px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3); }
+        .search-btn:hover { background-color: #e60000; transform: translateY(-2px); }
+        #library-content { display: none; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        input[type="text"], input[type="tel"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        .fee-card { background: #f0f7ff; padding: 15px; border-radius: 8px; border: 1px solid #b3d7ff; margin: 20px 0; }
+        .fee-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #555; }
+        .total-row { display: flex; justify-content: space-between; border-top: 1px dashed #b3d7ff; padding-top: 8px; font-size: 18px; font-weight: bold; color: #28a745; }
+        .submit-btn { background-color: #28a745; color: white; border: none; width: 100%; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(40,167,69,0.2); }
+        .submit-btn:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        📚 Tapasvi Vision Library by Ankush 📚
+        <div class="sub-header">Premium Admission & Fees Portal</div>
+    </div>
+    <div class="container">
+        <div id="locker-screen">
+            <div class="lock-box">
+                <div class="lock-icon">🔒</div>
+                <h2>वेरिफिकेशन ज़रूरी है</h2>
+                <p class="lock-text">एडमिशन फॉर्म और ऑनलाइन फीस गेटवे खोलने के लिए नीचे दिए बटन पर क्लिक करें और हमारे ऑफिशियल चैनल को सब्सक्राइब करें:<br>
+                <span class="highlight">Ankush Krishnavanshi (@iasankush-k)</span><br><br>
+                सब्सक्राइब करने के बाद यहाँ वापस आएं, पोर्टल तुरंत खुल जाएगा!</p>
+                <a href="https://youtube.com" target="_blank" class="search-btn" onclick="verifyAndUnlock()">🔍 यूट्यूब पर सब्सक्राइब करके अनलॉक करें</a>
+            </div>
+        </div>
+        <div id="library-content">
+            <h3 style="text-align: center; color: #b30000; margin-top: 0;">Online Admission & Payment Form</h3>
+            <form id="admissionForm" onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label>छात्र का पूरा नाम (Student Name)</label>
+                    <input type="text" placeholder="अपना नाम लिखें" required>
+                </div>
+                <div class="form-group">
+                    <label>मोबाइल नंबर (Mobile Number)</label>
+                    <input type="tel" placeholder="अपना mobile नंबर लिखें" required>
+                </div>
+                <div class="form-group">
+                    <label>लाइब्रेरी शिफ्ट चुनें (Select Shift Plan)</label>
+                    <select id="feePlan" onchange="calculateFees()" required>
+                        <option value="">-- शिफ्ट चुनें --</option>
+                        <option value="200">1 शिफ्ट - 4 घंटे (कुल फीस: ₹200)</option>
+                        <option value="400">2 शिफ्ट - 8 घंटे (कुल फीस: ₹400)</option>
+                        <option value="600">3 शिफ्ट - 12 घंटे (कुल फीस: ₹600)</option>
+                        <option value="800">4 शिफ्ट - 16 घंटे (कुल फीस: ₹800)</option>
+                        <option value="1000">फुल डे - 24 घंटे (कुल फीस: ₹1000)</option>
+                    </select>
+                </div>
+                <div class="fee-card">
+                    <div class="fee-row">
+                        <span>लाइब्रेरी मुख्य फीस (Ankush Account):</span>
+                        <span id="baseFee">₹0</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>वेबसाइट मेंटेनेंस फंड (Website Fund):</span>
+                        <span id="splitCharge">₹0</span>
+                    </div>
+                    <div class="total-row">
+                        <span>कुल भुगतान (Total To Pay):</span>
+                        <span id="totalFee">₹0</span>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">💳 फीस भुगतान करें और एडमिशन लें</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function verifyAndUnlock() {
+            setTimeout(function() {
+                document.getElementById('locker-screen').style.display = 'none';
+                document.getElementById('library-content').style.display = 'block';
+            }, 5000);
+        }
+        function calculateFees() {
+            var total = parseInt(document.getElementById('feePlan').value) || 0;
+            if(total > 0) {
+                var split = 10; 
+                var base = total - split;
+                document.getElementById('baseFee').innerText = '₹' + base;
+                document.getElementById('splitCharge').innerText = '₹' + split;
+                document.getElementById('totalFee').innerText = '₹' + total;
+            } else {
+                document.getElementById('baseFee').innerText = '₹0';
+                document.getElementById('splitCharge').innerText = '₹0';
+                document.getElementById('totalFee').innerText = '₹0';
+            }
+        }
+        function processPayment(e) {
+            e.preventDefault();
+            var total = document.getElementById('totalFee').innerText;
+            var base = document.getElementById('baseFee').innerText;
+            var split = document.getElementById('splitCharge').innerText;
+            alert('भुगतान प्रोसेस हो रहा है...\n\nअंकुश जी के खाते में जाएगा: ' + base + '\nवेबसाइट मेंटेनेंस फंड में जाएगा: ' + split + '\n\nकुल ' + total + ' का पेमेंट सफल रहा! आपका एडमिशन पक्का हो गया है।');
+        }
+    </script>
+</body>
+</html>
